@@ -1,0 +1,44 @@
+from task_manager import *
+from storage import *
+
+# load tasks from file when the program starts so that we can work with existing tasks.
+load_tasks()
+
+
+while True:
+    print("=" * 6 + " TO-DO-MENU " + "=" * 6)
+    print('''1. Add Task
+2. View Tasks
+3. Complete Task
+4. Delete Task
+5. Search Task
+6. Filter Tasks
+7. Edit Task
+8. Sort Task
+9. Exit''')
+    print("=" * 25 )
+    try:
+        choice =int(input("\nEnter your choice..."))
+        if choice==1:
+          add_task()
+        elif choice==2:
+            view_tasks()
+        elif choice==3:
+            complete_task()
+        elif choice==4:
+            delete_task()
+        elif choice==5:
+            search_task()
+        elif choice==6:
+            filter_tasks()
+        elif choice==7:
+            edit_task()
+        elif choice==8:
+            sort_tasks()
+        elif choice==9:
+            print("You exited the program...")
+            break
+        else:
+            print("Invalid choice...Please try again...")
+    except Exception as e:
+        print("Invalid input. Please enter a number.",e)
