@@ -1,38 +1,19 @@
 import datetime
 from storage import *
-
+from data import tasks
 
 
 # function to add task
-def add_task():
-    task_name=input("\nEnter task name...").title()
-    priority=input("Enter priority(High/Medium/Low)...").capitalize()
-    while priority not in ["High","Medium","Low"]:
-        print("Invalid priority! ")
-        priority=input("Enter priority(High/Medium/Low)...").capitalize()
-    while True:
-        due_date=input("Enter deadline (due date [YYYY-MM-DD]) for the task...")
-        try:
-            datetime.datetime.strptime(due_date, "%Y-%m-%d") #String parse time, it converts string into date object
-            break
-        except:
-            print("Invalid format.")
-
-    created_date=datetime.date.today()
-    status="Pending"
-    created_date=str(created_date) 
+def add_task(name, priority, due_date):
     task={
-          "task_name":task_name,
-          "priority":priority,
+          "task_name":name.title(),
+          "priority":priority.capitalize(),
           "due_date":due_date,
-          "date_of_creation":created_date,
-          "status":status
+          "date_of_creation":str(datetime.date.today()),
+          "status":"Pending"
           }# this is a dictionary for a particular task to be entered by the user
     tasks.append(task)
-    save_tasks2(task) 
-    print("Task added successfully!")
-    
-    print("_"*40)
+    save_tasks2(task)
 
 def display(task):
     print(f"Name: {task['task_name']}")

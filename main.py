@@ -20,7 +20,25 @@ while True:
     try:
         choice =int(input("\nEnter your choice..."))
         if choice==1:
-          add_task()
+          name=input("\nEnter task name...").title()
+
+          priority=input("Enter priority(High/Medium/Low)...").capitalize()
+          while priority not in ["High", "Medium", "Low"]:
+            print("Invalid priority!")
+            priority=input("Enter priority(High/Medium/Low)...").capitalize()
+
+          due_date=input("Enter deadline (due date [YYYY-MM-DD]) for the task...")
+          try:
+            datetime.datetime.strptime(due_date, "%Y-%m-%d")
+
+          except ValueError:
+            print("Invalid date format!")
+            due_date=input("Enter deadline (due date [YYYY-MM-DD]) for the task...")
+          
+          add_task(name, priority, due_date)
+
+          print("Task added successfully!")
+
         elif choice==2:
             view_tasks()
         elif choice==3:
