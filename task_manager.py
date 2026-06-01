@@ -69,48 +69,24 @@ def view_tasks():
     print("_"*40)
 
 # function to checklist the tasks that are completed.
-def complete_task():
+def complete_task(task_index):
     if len(tasks)==0:
-        print("No task to update...")
-        return
-    view_tasks()
-    try:
-        task_num=int(input("Enter task number to mark as complete..."))
-        if task_num < 1 or task_num > len(tasks):
-            print("Exceeded the number of tasks...")
-            return
-        for idx,task in enumerate(tasks,start=1): 
-            if idx==task_num:
-                task["status"]="Done"
-                print("Task marked as completed...")
-                save_tasks(tasks)
-                view_tasks()
-                break
-    except Exception as e:
-        print("Invalid input. Please enter a number.",e)
-    
-    print("_"*40)
+        return False
+    if task_index < 0 or task_index >= len(tasks):
+        return False
+    tasks[task_index]["status"]="Done"
+    save_tasks(tasks)
+    return True
 
-def delete_task():
+def delete_task(task_index):
     if len(tasks)==0:
-        print("Nothing to be deleted...:(")
-        return
-    view_tasks()
-    while True:
-        try:
-            del_task=int(input("Enter task number to delete..."))
-            if del_task>len(tasks) or del_task<1:
-                print("Exceeded (or invalid ) the number of tasks...")
-                return
+        return False
+    if task_index < 0 or task_index >= len(tasks) :
+        return False
             
-            del(tasks[del_task-1])
-            save_tasks(tasks)
-            print("Task deleted successfully...:)")
-            view_tasks()
-            break
-        except Exception as e:
-            print("Invalid input. Please enter a number.",e) 
-    print("_"*40)
+    del(tasks[task_index])
+    save_tasks(tasks)
+    return True
 
 
 def search_task():

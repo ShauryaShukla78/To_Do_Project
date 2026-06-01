@@ -23,7 +23,7 @@ def load_tasks():
                         "task_name" :parts[0],
                         "priority" :parts[1],
                         "due_date" :parts[2],
-                        "tdate_of_creation" :parts[3],
+                        "date_of_creation" :parts[3],
                         "status" :parts[4],
                     }
                     tasks.append(task)
