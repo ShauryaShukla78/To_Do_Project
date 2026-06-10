@@ -20,3 +20,19 @@ class TaskManager:
 
     def get_tasks(self):
         return self.tasks
+    
+    def sort_by_date(self):
+        self.tasks.sort(key=lambda task: task.due_date)
+        save_tasks(self.tasks)
+
+    def sort_by_priority(self):
+        priority_order = {
+            "High": 0,
+            "Medium": 1,
+            "Low": 2
+        }
+
+        self.tasks.sort(
+            key=lambda task: priority_order.get(task.priority, 3)
+        )
+        save_tasks(self.tasks)
