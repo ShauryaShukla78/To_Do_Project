@@ -36,3 +36,7 @@ class TaskManager:
             key=lambda task: priority_order.get(task.priority, 3)
         )
         save_tasks(self.tasks)
+
+    def clear_completed_tasks(self):
+        self.tasks = [task for task in self.tasks if task.status != "Done"]
+        save_tasks(self.tasks)

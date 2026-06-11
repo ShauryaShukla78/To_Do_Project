@@ -1,11 +1,10 @@
 from tkinter import *
 from tkinter import messagebox as msg
-from storage_json import load_tasks, save_tasks
+from storage_json import save_tasks
 from task_manager_gui import TaskManager
 from models import Task
 import datetime
 import customtkinter as ctk
-from tkinter import messagebox
 
 #Initializes TaskManager which handles all task operations (add, delete, update)
 manager = TaskManager()
@@ -13,6 +12,7 @@ displayed_tasks = []
 search_text = ""
 current_sort = "priority"
 editing_task_id = None
+dark_mode = False
 
 # Refreshes the entire task list in the UI
 # Fetches latest tasks from TaskManager and applies sorting + formatting
@@ -24,6 +24,16 @@ def show_tasks_gui():
 
     tasks = manager.get_tasks()
 
+    total_tasks = len(tasks)
+
+    completed_tasks = len([task for task in tasks if task.status.lower() == "done"])
+
+    pending_tasks = total_tasks - completed_tasks
+
+    stats_label.config(
+    text=f"Total: {total_tasks} | Completed: {completed_tasks} | Pending: {pending_tasks}"
+)
+
     priority_order = {"high": 0, "medium": 1, "low": 2}
 
     if current_sort == "priority":
@@ -31,7 +41,7 @@ def show_tasks_gui():
 
     elif current_sort == "date":
         sorted_tasks = sorted(tasks,
-        key=lambda x: x.due_date)
+        key=lambda x: datetime.datetime.strptime(x.due_date,"%Y-%m-%d"))
 
     elif current_sort == "status":
         sorted_tasks = sorted(
@@ -95,6 +105,7 @@ def add_task_gui():
                 t.name = name
                 t.priority = priority
                 t.due_date = due_date
+                break
 
         manager._save()
         editing_task_id = None
@@ -192,18 +203,18 @@ def sort_by_date():
     current_sort = "date"
     show_tasks_gui()
 
-def clear_completed_tasks():
+def clear_completed_tasks_gui():
 
     completed = [task for task in manager.tasks if task.status.lower() == "done"]
 
     if not completed:
-        messagebox.showinfo(
+        msg.showinfo(
             "Info",
             "No completed tasks found."
         )
         return
     
-    confirm = messagebox.askyesno(
+    confirm = msg.askyesno(
         "Confirm",
         f"Delete {len(completed)} completed task(s)?"
     )
@@ -227,6 +238,97 @@ def sort_by_status():
     current_sort = "status"
     show_tasks_gui()
 
+def toggle_theme():
+    global dark_mode
+
+    dark_mode = not dark_mode
+
+    if dark_mode:
+        root.configure(bg="#2b2b2b")
+        main_frame.configure(bg="#2b2b2b")
+
+        left_frame.configure(bg="#3c3f41")
+        right_frame.configure(bg="#3c3f41")
+
+        selected_label.configure(bg="#2b2b2b", fg="white")
+
+        taskname_label.configure(bg="#3c3f41", fg="white")
+        priority_label.configure(bg="#3c3f41", fg="white")
+        duedate_label.configure(bg="#3c3f41", fg="white")
+
+        taskname_entry.configure( bg="#4a4a4a", fg="white", insertbackground="white")
+
+        duedate_entry.configure(bg="#4a4a4a", fg="white", insertbackground="white")
+
+        task_listbox.configure( bg="#4a4a4a", fg="white")
+
+        edit_button.configure( bg="#4a4a4a", fg="white")
+
+        delete_button.configure( bg="#4a4a4a", fg="white")
+
+        complete_button.configure( bg="#4a4a4a", fg="white")
+
+        theme_button.configure( bg="#4a4a4a", fg="white", text="☀️ Light Mode")
+
+        button_frame.configure(bg="#2b2b2b")
+
+        priority_menu.configure( bg="#4a4a4a", fg="white")
+
+        stats_label.configure( bg="#3c3f41", fg="white")
+
+        sort_frame.configure(bg="#3c3f41")
+
+        priority_sort_button.configure( bg="#4a4a4a", fg="white")
+
+        date_sort_button.configure( bg="#4a4a4a", fg="white")
+
+        status_sort_button.configure( bg="#4a4a4a", fg="white")
+
+        clear_completed_button.configure( bg="#4a4a4a", fg="white")
+
+    else:
+        root.configure(bg="#f5f6fa")
+        main_frame.configure(bg="#f5f6fa")
+
+        left_frame.configure(bg="white")
+        right_frame.configure(bg="white")
+
+        selected_label.configure(bg="#f5f6fa", fg="black")
+
+        taskname_label.configure(bg="white", fg="black")
+        priority_label.configure(bg="white", fg="black")
+        duedate_label.configure(bg="white", fg="black")
+
+        taskname_entry.configure( bg="white", fg="black", insertbackground="black")
+
+        duedate_entry.configure( bg="white", fg="black", insertbackground="black")
+
+        task_listbox.configure( bg="white", fg="black")
+
+        edit_button.configure( bg="SystemButtonFace", fg="black")
+
+        delete_button.configure( bg="SystemButtonFace", fg="black")
+
+        complete_button.configure( bg="SystemButtonFace", fg="black")
+
+        theme_button.configure( bg="SystemButtonFace", fg="black", text="🌙 Dark Mode")
+
+        button_frame.configure(bg="#f5f6fa")
+
+        priority_menu.configure( bg="SystemButtonFace", fg="black")
+
+        stats_label.configure( bg="white", fg="black")
+
+        sort_frame.configure(bg="white")
+
+        priority_sort_button.configure( bg="SystemButtonFace", fg="black")
+
+        date_sort_button.configure( bg="SystemButtonFace", fg="black")
+
+        status_sort_button.configure( bg="SystemButtonFace", fg="black")
+
+        clear_completed_button.configure( bg="SystemButtonFace", fg="black")
+
 # Initializes main Tkinter window and all UI components
 root = Tk()
 root.title("TASK PILOT - Your Personal Task Manager")
@@ -241,25 +343,27 @@ main_frame.pack(fill=BOTH, expand=True, padx=15, pady=15)
 left_frame = Frame(main_frame, bg="white", padx=20, pady=20, relief=RIDGE, bd=2)
 left_frame.pack(side=LEFT, fill=Y)
 
-Label(left_frame, text="Task Name", bg="white").pack(anchor="w")
+taskname_label = Label(left_frame, text="Task Name", bg="white")
+taskname_label.pack(anchor="w")
+
 taskname_entry = Entry(left_frame, width=30)
 taskname_entry.pack(pady=5)
 
 
-Label(left_frame, text="Priority", bg="white").pack(anchor="w")
+priority_label = Label(left_frame, text="Priority", bg="white")
+priority_label.pack(anchor="w")
+
 priority_var = StringVar()
 priority_var.set("Low")
-OptionMenu(left_frame, priority_var, "High", "Medium", "Low").pack(fill=X, pady=5)
+priority_menu = OptionMenu(left_frame, priority_var, "High", "Medium", "Low")
+priority_menu.pack(fill=X, pady=5)
 
 
-Label(left_frame, text="Due Date (YYYY-MM-DD)", bg="white").pack(anchor="w")
+duedate_label = Label(left_frame, text="Due Date (YYYY-MM-DD)", bg="white")
+duedate_label.pack(anchor="w")
+
 duedate_entry = Entry(left_frame, width=30)
 duedate_entry.pack(pady=5)
-
-
-addtask_button = Button(root, text="Add Task", width=25, command=add_task_gui)
-addtask_button.pack()
-
 
 addtask_button = Button(
     left_frame,
@@ -281,6 +385,11 @@ search_entry.pack(fill=X, pady=5)
 
 search_entry.bind("<KeyRelease>", lambda event: search_tasks())
 
+stats_label = Label(right_frame,
+    text="", bg="white", font=("Arial", 10, "bold")
+)
+stats_label.pack(pady=(0, 5))
+
 task_listbox = Listbox(right_frame, font=("Arial", 11))
 task_listbox.pack(side=LEFT, fill=BOTH, expand=True)
 task_listbox.bind("<Double-Button-1>", toggle_task_status)
@@ -295,10 +404,18 @@ scrollbar.config(command=task_listbox.yview)
 button_frame = Frame(root, bg="#f5f6fa")
 button_frame.pack(pady=10)
 
-Button(button_frame, text="Edit", width=12, command=edit_task_gui).grid(row=0, column=0, padx=5)
-Button(button_frame, text="Delete", width=12, command=delete_task_gui).grid(row=0, column=1, padx=5)
-Button(button_frame, text="Complete", width=12, command=complete_task_gui).grid(row=0, column=2, padx=5)
+edit_button = Button(button_frame, text="Edit", width=12, command=edit_task_gui)
+edit_button.grid(row=0, column=0, padx=5)
 
+delete_button = Button(button_frame, text="Delete", width=12, command=delete_task_gui)
+delete_button.grid(row=0, column=1, padx=5)
+
+complete_button = Button(button_frame, text="Complete", width=12, command=complete_task_gui)
+complete_button.grid(row=0, column=2, padx=5)
+
+theme_button  = Button(button_frame, text="🌙 Dark Mode", width=12, command=toggle_theme
+)
+theme_button.grid(row=0, column=3, padx=5)
 
 selected_label = Label(root, text="", bg="#f5f6fa", fg="black")
 selected_label.pack()
@@ -306,12 +423,19 @@ selected_label.pack()
 sort_frame = Frame(right_frame, bg="white")
 sort_frame.pack(fill=X, pady=(0, 10))
 
-Button(sort_frame,text="Priority", width=13,command=sort_by_priority).pack()
-Button(sort_frame,text="Due Date", width=13, command=sort_by_date).pack()
-Button(sort_frame,text="Status", width=13, command=sort_by_status).pack()
-Button(sort_frame,text="Clear Completed", width=13,command=clear_completed_tasks
-).pack(side=RIGHT, padx=5)
+priority_sort_button=Button(sort_frame,text="Priority", width=13,command=sort_by_priority)
+priority_sort_button.pack()
+date_sort_button=Button(sort_frame,text="Due Date", width=13, command=sort_by_date)
+date_sort_button.pack()
+status_sort_button=Button(sort_frame,text="Status", width=13, command=sort_by_status)
+status_sort_button.pack()
+clear_completed_button=Button(sort_frame,text="Clear Completed", width=13,command=clear_completed_tasks_gui
+)
+clear_completed_button.pack(side=RIGHT, padx=5)
+
 
 # LOAD + START
 show_tasks_gui()
+root.bind("<Return>", lambda event: add_task_gui())
+root.bind("<Delete>", lambda event: delete_task_gui())
 root.mainloop()
