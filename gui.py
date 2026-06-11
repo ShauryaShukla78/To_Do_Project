@@ -331,6 +331,21 @@ def toggle_theme():
 
 # Initializes main Tkinter window and all UI components
 root = Tk()
+import os , sys
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+try:
+    root.iconbitmap(resource_path("app.ico"))
+except Exception as e:
+    print("Icon load failed:", e)
+
 root.title("TASK PILOT - Your Personal Task Manager")
 root.geometry("900x550")
 root.configure(bg="#f5f6fa")
