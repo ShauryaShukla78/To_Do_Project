@@ -1,4 +1,4 @@
-# TaskPilot
+# TaskPilot – Desktop Task Manager
 
 A feature-rich Personal Task Manager built using Python and Tkinter. TaskPilot helps users organize, track, and manage daily tasks efficiently through an interactive graphical user interface.
 
@@ -59,6 +59,15 @@ pip install customtkinter
 ```bash
 python gui.py
 ```
+
+## 📦 Download (Windows App)
+
+👉 Go to the **Releases** section of this repository  
+👉 Download the latest `gui.exe`  
+👉 Double-click to run (no installation required)
+
+✔ Works on Windows  
+✔ No Python required for users  
 
 ## Keyboard Shortcuts
 
