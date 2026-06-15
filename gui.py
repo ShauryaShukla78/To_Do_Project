@@ -107,7 +107,7 @@ def add_task_gui():
                 t.due_date = due_date
                 break
 
-        manager._save()
+        save_tasks(manager.tasks)
         editing_task_id = None
         addtask_button.config(text="Add Task")
         selected_label.config(text="")
